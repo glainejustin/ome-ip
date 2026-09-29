@@ -6,13 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Userscript managers update an installed copy when the published `@version` rises, so the version number in `ome-ip.js` is the release signal — bumping it without publishing does nothing for existing installs.
 
+Release tags (`v3.0.0` onward) are published on the fork. The bare `1.2`–`3.4` tags are inherited from the original upstream history and do not correspond to the `@version` in those builds — see [Earlier versions](#earlier-versions).
+
 ---
 
 ## [Unreleased]
 
+Nothing yet.
+
+---
+
+## [3.0.1] - 2026-09-29
+
 ### Fixed
 
-- **The gender status dot was unreadable.** All three modes shared `dotIcon: '?'`, so the dot looked identical whether the filter was off, skipping women or skipping men — the active mode was recoverable only from the tooltip. The modes now render `⊘`, `♀` and `♂` respectively. `updateStatusDots()` was already re-driving the icon and title on every call; the data was the only broken half.
+- **The gender status dot was unreadable.** All three modes shared `dotIcon: '?'`, so the dot looked identical whether the filter was off, skipping women or skipping men — the active mode was recoverable only from the tooltip, which defeats the point of a status dot. The modes now render `⊘`, `♀` and `♂`. `updateStatusDots()` was already re-driving the icon and title on every call; the data was the only broken half.
+- **README correction.** The Gender Filter section claimed the dot turns green when a filter is active. It turns gold (`#FFD700`) when active and red when off.
 
 ### Tests
 
@@ -82,5 +91,6 @@ Versions before `3.0.0` were not tracked in a changelog, and the repository's ta
 
 The initial commit carried `@version 2.13`, which was later renumbered down to `1.0`. If you are upgrading from a tagged build, check the `@version` in your installed copy rather than trusting the tag name — and note that an install sitting on `2.13` will not pick up anything numbered below `2.13`.
 
-[Unreleased]: https://github.com/EolnMsuk/ome-ip/compare/v3.0.0...HEAD
-[3.0.0]: https://github.com/EolnMsuk/ome-ip/compare/20b9472...v3.0.0
+[Unreleased]: https://github.com/glainejustin/ome-ip/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/glainejustin/ome-ip/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/glainejustin/ome-ip/compare/20b9472...v3.0.0
