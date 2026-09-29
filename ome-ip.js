@@ -2,7 +2,7 @@
 // @name         ome-ip
 // @license      GPL-3.0
 // @namespace    https://github.com/EolnMsuk/ome-ip
-// @version      2.2
+// @version      3.0.0
 // @description  Pro IP Tool for all omegle like sites
 // @author       $eolnmsuk
 // @match        https://ome.tv/*

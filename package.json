@@ -1,6 +1,6 @@
 {
   "name": "ome-ip",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Userscript that enhances random video chat platforms with partner geolocation, tag filtering, media stream manipulation and blocking controls.",
   "main": "ome-ip.js",
   "files": [
