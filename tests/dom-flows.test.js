@@ -397,8 +397,30 @@ function buildHarness() {
         '};' +
         'var showToast = function(msg) { window.__lastToast = msg; };' +
         'var updateAdvToggleVisual = function() {};' +
+        // updateStatusDots' final two calls; no-op here since we only assert
+        // on the dot DOM, not the settings-panel switches.
+        'var updateSettingSwitch = function() {};' +
         'var genderFilterMode = "off";' +
         'var isWindowTransparent = false;' +
+        // ----- updateStatusDots() globals -----
+        // The real updateStatusDots is eval'd in buildHarness but was never
+        // *called* (see the gender-dot icon test below), so none of these had
+        // to exist. They do now: the function reads every dot's live flag on
+        // each call, so a missing one is a ReferenceError.
+        'var isIPGrabbingEnabled = false;' +
+        'var isFaceProtectionEnabled = false;' +
+        'var facesDetectedCount = 0;' +
+        'var isReportProtectionEnabled = false;' +
+        'var reportsBlockedCount = 0;' +
+        'var countryBlockingEnabled = false;' +
+        'var ipBlockingEnabled = false;' +
+        'var isFingerprintSpoofingEnabled = false;' +
+        'var isThumbnailCaptureEnabled = false;' +
+        'var isAntiBotEnabled = false;' +
+        'var geoFenceMode = "off";' +
+        'var blockedRegionsCache = new Set();' +
+        'var stateFilterCsvEnabled = false;' +
+        'var stateFilterCsvTokens = new Set();' +
         'var currentIP = null;' +
         'var isRelayIP = false;' +
         'var currentApiData = null;' +
@@ -486,7 +508,10 @@ function buildHarness() {
         { imports: { GENDER: '__omeGENDER' },
           exports: { createToggleDot: '__omeCreateToggleDot' } });
     evalBlock(window, extractRange(DISCOVERED.UPDATE_STATUS),
-        { imports: { GENDER: '__omeGENDER' },
+        // FAKE_CONFIG must be imported too: updateStatusDots reads it for the
+        // camera / relay / spoof / udp / antiban dots, so omitting it made any
+        // real call throw ReferenceError.
+        { imports: { GENDER: '__omeGENDER', FAKE_CONFIG: '__omeFAKE_CONFIG' },
           exports: { updateStatusDots: '__omeUpdateStatusDots' } });
 
     return { dom, window };
@@ -594,6 +619,48 @@ test('flow 1: cycle syncs dropdown after each click', () => {
     assertEq(sel.value, 'skip-men', 'after 2nd click');
     dot.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
     assertEq(sel.value, 'off', 'after 3rd click');
+});
+
+// Regression guard. All three gender modes used to carry dotIcon '?', so the
+// dot looked identical in every state and the active mode was readable only
+// from its tooltip. updateStatusDots() already re-drove the icon and title on
+// every call, so the data was the only broken half -- but the existing tests
+// never called it, so nothing would have caught a regression here. This one
+// drives the real function rather than mirroring it.
+test('flow 1: gender dot renders a DISTINCT icon per mode via updateStatusDots', () => {
+    const { window } = buildHarness();
+    const GENDER = window.__omeGENDER;
+    const createToggleDot = window.__omeCreateToggleDot;
+    const updateStatusDots = window.__omeUpdateStatusDots;
+
+    const wrapper = createToggleDot(
+        'status-dot-gender', () => false,
+        GENDER.entryForMode('off').dotIcon, 'Gender Filter: Off', () => {}
+    );
+    window.document.body.appendChild(wrapper);
+    const dot = innerDotOf(wrapper);
+    const iconSpan = dot.querySelector('.ome-icon-span');
+    assert(iconSpan, 'dot renders a .ome-icon-span');
+
+    const iconsSeen = [];
+    // Assert the SPECIFIC glyphs, not just that they differ. A
+    // distinctness-only check still passes if two modes are '♀'/'♂' and the
+    // third regresses to '?' - which is exactly the bug this guards.
+    const EXPECTED_ICONS = { 'off': '⊘', 'skip-women': '♀', 'skip-men': '♂' };
+    for (const mode of GENDER.MODES) {
+        window.eval('genderFilterMode = ' + JSON.stringify(mode) + ';');
+        updateStatusDots();
+        iconsSeen.push(iconSpan.textContent);
+        assertEq(GENDER.entryForMode(mode).dotIcon, EXPECTED_ICONS[mode],
+            'GENDER.dotIcon for ' + mode + ' (data half)');
+        assertEq(iconSpan.textContent, EXPECTED_ICONS[mode],
+            'rendered icon while in mode ' + mode + ' (DOM half)');
+        assertEq(dot.title, 'Gender Filter: ' + GENDER.entryForMode(mode).dotLabel,
+            'title while in mode ' + mode);
+    }
+
+    assertEq(new Set(iconsSeen).size, GENDER.MODES.length,
+        'each mode must render its own glyph; saw ' + JSON.stringify(iconsSeen));
 });
 
 // ======================================================================

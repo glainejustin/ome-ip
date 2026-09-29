@@ -10,7 +10,14 @@ Userscript managers update an installed copy when the published `@version` rises
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- **The gender status dot was unreadable.** All three modes shared `dotIcon: '?'`, so the dot looked identical whether the filter was off, skipping women or skipping men — the active mode was recoverable only from the tooltip. The modes now render `⊘`, `♀` and `♂` respectively. `updateStatusDots()` was already re-driving the icon and title on every call; the data was the only broken half.
+
+### Tests
+
+- New regression test driving the **real** `updateStatusDots()` across all three modes, asserting the specific glyph rendered rather than merely that the three differ. The harness previously eval'd that function but never called it, which is why the shared-icon bug went unnoticed.
+- The test harness now stubs the module-level flags `updateStatusDots()` reads (`isIPGrabbingEnabled`, `geoFenceMode`, `blockedRegionsCache` and friends) and imports `FAKE_CONFIG` into its eval scope, so the function is actually callable.
 
 ---
 

@@ -61,7 +61,7 @@ The Gender and CSV filters are toggled from a status-dot panel; the tag pills li
 
 ### Gender Filter
 
-Click the **Gender dot** to cycle the mode. The dot turns green while a filter is active, and its tooltip names the current mode. The stats window shows a matching line such as `Gender Filter: Skip Women`.
+Click the **Gender dot** to cycle the mode. Its icon shows the current state at a glance — `⊘` for Off, `♀` for Skip Women, `♂` for Skip Men — and it turns gold while a filter is active (red when off). The tooltip names the mode too, and the stats window shows a matching line such as `Gender Filter: Skip Women`.
 
 A mode only fires when the partner **already has a gender tag**. Untagged partners are never skipped — the filter is a filter over tags, not a classifier. Tags can come from three places:
 

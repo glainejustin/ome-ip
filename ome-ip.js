@@ -777,7 +777,7 @@
         DATA: {
             'off': {
                 mode: 'off', code: 'u',
-                dotIcon: '?', dotLabel: 'Off',
+                dotIcon: '⊘', dotLabel: 'Off',
                 dropdownLabel: 'Off (no skip)',
                 icon: '?', label: '? Unknown',
                 color: '#888888', bg: '#88888833',
@@ -786,7 +786,7 @@
             },
             'skip-women': {
                 mode: 'skip-women', code: 'f',
-                dotIcon: '?', dotLabel: 'Skip Women',
+                dotIcon: '♀', dotLabel: 'Skip Women',
                 dropdownLabel: 'Skip Women',
                 icon: '♀', label: '♀ Woman',
                 color: '#FF66AA', bg: '#FF66AA33',
@@ -795,7 +795,7 @@
             },
             'skip-men': {
                 mode: 'skip-men', code: 'm',
-                dotIcon: '?', dotLabel: 'Skip Men',
+                dotIcon: '♂', dotLabel: 'Skip Men',
                 dropdownLabel: 'Skip Men',
                 icon: '♂', label: '♂ Man',
                 color: '#66CCFF', bg: '#66CCFF33',
