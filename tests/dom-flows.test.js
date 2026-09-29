@@ -663,6 +663,66 @@ test('flow 1: gender dot renders a DISTINCT icon per mode via updateStatusDots',
         'each mode must render its own glyph; saw ' + JSON.stringify(iconsSeen));
 });
 
+// Regression guard. The CSV dot's amber styling was chained as
+// `else if (type === "csv")` onto `if (iconSpan)`. createToggleDot always
+// renders an icon span, so that branch never ran and every build showed the
+// stock red/green dot the author intended to replace.
+test('CSV dot renders amber, not the default red/green', () => {
+    const { window } = buildHarness();
+    const createToggleDot = window.__omeCreateToggleDot;
+    const updateStatusDots = window.__omeUpdateStatusDots;
+
+    const wrapper = createToggleDot(
+        'status-dot-csv-state', () => false, '\uD83D\uDCC4', 'CSV Filter', () => {}
+    );
+    window.document.body.appendChild(wrapper);
+    const dot = innerDotOf(wrapper);
+    const iconSpan = dot.querySelector('.ome-icon-span');
+
+    updateStatusDots();
+    assert(/255,\s*165,\s*0/.test(dot.style.backgroundColor),
+        'inactive CSV dot fill is amber; got ' + JSON.stringify(dot.style.backgroundColor));
+    assert(/255,\s*165,\s*0/.test(dot.style.borderColor),
+        'inactive CSV dot border is amber; got ' + JSON.stringify(dot.style.borderColor));
+    assert(/255,\s*165,\s*0|#FFA500/i.test(dot.style.boxShadow),
+        'inactive CSV dot glow is amber; got ' + JSON.stringify(dot.style.boxShadow));
+
+    window.eval('stateFilterCsvEnabled = true; stateFilterCsvTokens = new Set(["kerala", "bavaria"]);');
+    updateStatusDots();
+    assert(/255,\s*165,\s*0/.test(dot.style.backgroundColor),
+        'active CSV dot fill is amber; got ' + JSON.stringify(dot.style.backgroundColor));
+    assert(dot.title.indexOf('CSV Filter ON') === 0,
+        'active CSV dot title reports ON; got ' + JSON.stringify(dot.title));
+    assert(dot.title.indexOf('2 tokens') > -1,
+        'active CSV dot title reports the token count; got ' + JSON.stringify(dot.title));
+    assertEq(iconSpan.textContent, '\uD83D\uDCDD', 'active CSV dot swaps to the memo icon');
+});
+
+// Regression guard. The CSV refresh block was nested inside
+// `if (genderFilterDot)`, so a page carrying the CSV dot but no gender dot got
+// no CSV styling at all. Creating only the CSV dot proves the two are now
+// independent.
+test('CSV dot refreshes with no gender dot on the page', () => {
+    const { window } = buildHarness();
+    const createToggleDot = window.__omeCreateToggleDot;
+    const updateStatusDots = window.__omeUpdateStatusDots;
+
+    assertEq(window.document.getElementById('status-dot-gender'), null,
+        'precondition: no gender dot exists');
+    const wrapper = createToggleDot(
+        'status-dot-csv-state', () => false, '\uD83D\uDCC4', 'CSV Filter', () => {}
+    );
+    window.document.body.appendChild(wrapper);
+    const dot = innerDotOf(wrapper);
+
+    window.eval('stateFilterCsvEnabled = true; stateFilterCsvTokens = new Set(["kerala"]);');
+    updateStatusDots();
+    assert(dot.title.indexOf('CSV Filter ON') === 0,
+        'CSV dot still refreshes without a gender dot; got ' + JSON.stringify(dot.title));
+    assert(/255,\s*165,\s*0/.test(dot.style.backgroundColor),
+        'CSV dot still gets amber without a gender dot; got ' + JSON.stringify(dot.style.backgroundColor));
+});
+
 // ======================================================================
 // FLOW 2 — tag-pill click selection visual
 // ======================================================================

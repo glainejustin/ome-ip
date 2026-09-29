@@ -2975,10 +2975,19 @@ unsafeWindow.ome_ip_csv_filter_state = function() { return { enabled: stateFilte
             if (iconSpan) {
                 if (isActive) iconSpan.classList.add("ome-anim-jiggle");
                 else iconSpan.classList.remove("ome-anim-jiggle");
-        } else if (type === "csv") {
-            // [NEW] CSV region filter dot - amber to distinguish from country-blocker
-            el.style.backgroundColor = isActive ? "#FFA500" : "rgba(255, 165, 0, 0.2)";
-            el.style.borderColor = isActive ? "#FFA500" : "rgba(255, 165, 0, 0.5)";
+            }
+
+            // [NEW] CSV region filter dot - amber to distinguish from country-blocker.
+            // This used to sit on `else if` of `if (iconSpan)`, but createToggleDot
+            // always renders an icon span, so the branch was unreachable and no
+            // build ever got the amber styling. Keep it a sibling `if`, and drive
+            // the glow too - otherwise the dot keeps the default red/green shadow
+            // and reads as broken next to an amber fill.
+            if (type === "csv") {
+                const amber = "#FFA500";
+                el.style.backgroundColor = isActive ? amber : "rgba(255, 165, 0, 0.2)";
+                el.style.borderColor = isActive ? amber : "rgba(255, 165, 0, 0.5)";
+                el.style.boxShadow = isActive ? `0 0 8px ${amber}` : `0 0 3px ${amber}`;
             }
 
             if (type === 'ipgrab') el.title = isActive ? "IP Grabbing: ON" : "IP Grabbing: OFF";
@@ -3029,7 +3038,13 @@ unsafeWindow.ome_ip_csv_filter_state = function() { return { enabled: stateFilte
             const entry = GENDER.entryForMode(genderFilterMode);
             const gfIcon = genderFilterDot.querySelector('.ome-icon-span');
             if (gfIcon) gfIcon.textContent = entry.dotIcon;
-        // [NEW] CSV filter dot
+            genderFilterDot.title = "Gender Filter: " + entry.dotLabel;
+        }
+
+        // [NEW] CSV filter dot. This block used to be nested inside
+        // `if (genderFilterDot)`, so CSV refresh silently depended on the gender
+        // dot existing on the page. They are independent controls - keep them
+        // independent.
         const csvDot = document.getElementById("status-dot-csv-state");
         if (csvDot) {
             applyStyle(csvDot, stateFilterCsvEnabled, "csv");
@@ -3038,8 +3053,6 @@ unsafeWindow.ome_ip_csv_filter_state = function() { return { enabled: stateFilte
             csvDot.title = stateFilterCsvEnabled
                 ? "CSV Filter ON: " + stateFilterCsvTokens.size + " tokens (click to disable)"
                 : "CSV Filter OFF (click to enable & edit)";
-        }
-            genderFilterDot.title = "Gender Filter: " + entry.dotLabel;
         }
 
         updateAdvToggleVisual("adv-toggle-ip-grab", isIPGrabbingEnabled);

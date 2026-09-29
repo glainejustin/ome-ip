@@ -12,7 +12,14 @@ Release tags (`v3.0.0` onward) are published on the fork. The bare `1.2`–`3.4`
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- **The CSV status dot never received its amber styling.** The block was chained as `else if (type === "csv")` onto `if (iconSpan)`, but `createToggleDot` always renders an icon span — so the branch was unreachable and every build showed the stock red/green dot the amber treatment was meant to replace. It is now a sibling `if`, and it also drives `boxShadow`: without that the dot kept the default red/green glow beside an amber fill.
+- **CSV dot refresh was coupled to the gender dot.** The whole CSV block sat nested inside `if (genderFilterDot)`, so CSV styling, icon and tooltip silently depended on the gender dot existing on the page. The two are independent controls and are now un-nested.
+
+### Tests
+
+- Two regression tests covering the above, both driving the real `updateStatusDots()`: one asserting the CSV dot's fill, border and glow are amber and its tooltip reports the live token count, one asserting the dot still refreshes with no gender dot present. Both fail against the pre-fix code.
 
 ---
 
