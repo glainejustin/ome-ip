@@ -12,6 +12,12 @@ Release tags (`v3.0.0` onward) are published on the fork. The bare `1.2`–`3.4`
 
 ## [Unreleased]
 
+Nothing yet.
+
+---
+
+## [3.0.2] - 2026-09-29
+
 ### Fixed
 
 - **The CSV status dot never received its amber styling.** The block was chained as `else if (type === "csv")` onto `if (iconSpan)`, but `createToggleDot` always renders an icon span — so the branch was unreachable and every build showed the stock red/green dot the amber treatment was meant to replace. It is now a sibling `if`, and it also drives `boxShadow`: without that the dot kept the default red/green glow beside an amber fill.
@@ -98,6 +104,7 @@ Versions before `3.0.0` were not tracked in a changelog, and the repository's ta
 
 The initial commit carried `@version 2.13`, which was later renumbered down to `1.0`. If you are upgrading from a tagged build, check the `@version` in your installed copy rather than trusting the tag name — and note that an install sitting on `2.13` will not pick up anything numbered below `2.13`.
 
-[Unreleased]: https://github.com/glainejustin/ome-ip/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/glainejustin/ome-ip/compare/v3.0.2...HEAD
+[3.0.2]: https://github.com/glainejustin/ome-ip/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/glainejustin/ome-ip/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/glainejustin/ome-ip/compare/20b9472...v3.0.0
