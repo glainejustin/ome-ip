@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Local agent / workspace metadata
+.freebuff/
+
+# Editor & OS noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Manual backup copies of the userscript
+*.bak
+
+# One-off scratch scripts and dumps used while patching ome-ip.js
+_patch_*.py
+_consolidate_gender*.py
+_region_*.txt
+_anchors.txt
+_cab.txt
+broken_section.txt
+fixvideo.bat

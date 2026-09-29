@@ -1,0 +1,30 @@
+{
+  "name": "ome-ip",
+  "version": "2.2.0",
+  "description": "Userscript that enhances random video chat platforms with partner geolocation, tag filtering, media stream manipulation and blocking controls.",
+  "main": "ome-ip.js",
+  "files": [
+    "ome-ip.js"
+  ],
+  "scripts": {
+    "test": "node tests/smoke-gender.test.js && node tests/dom-flows.test.js",
+    "check": "node --check ome-ip.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EolnMsuk/ome-ip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EolnMsuk/ome-ip/issues"
+  },
+  "homepage": "https://github.com/EolnMsuk/ome-ip#readme",
+  "keywords": [
+    "userscript",
+    "omegle",
+    "ome-tv"
+  ],
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

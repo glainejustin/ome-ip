@@ -1,0 +1,11 @@
+# Normalize line endings so the repository stores LF and the working tree
+# checks out LF too. Without this, autocrlf rewriting made every single line
+# of ome-ip.js show up as changed.
+* text=auto eol=lf
+
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.txt text eol=lf
+*.bat text eol=crlf
